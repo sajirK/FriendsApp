@@ -1,6 +1,35 @@
 var express = require('express');
 var router = express.Router();
 var  fileUpload = require('express-fileupload');
+var mongoose = require('mongoose');
+var options = {
+  server: {
+    socketOptions: {
+      connectTimeoutMS: 5000
+    }
+  }
+};
+mongoose.connect('mongodb://aaa:aaa@ds261088.mlab.com:61088/wholup',
+  options,
+  function(err) {
+    console.log(err);
+  }
+);
+
+   // user base de donnée
+var userSchema = mongoose.Schema({
+  name: String,
+  email: String,
+  password: String,
+  job: String,
+  linkedin:String,
+  twitter:String,
+  Discord:String,
+  bio: String
+});
+var UserModel = mongoose.model('users', userSchema);
+
+
 var data = {
   region: {
     latitude: 37.78825,
@@ -50,5 +79,45 @@ router.post('/upload', function(req, res) {
     res.send('File uploaded!');
   });
 });
+
+// user form database
+router.post('/signUp', function(req, res, next) {
+if (req.body.password == req.body.confirm) {
+
+
+UserModel.find(
+ {email: req.body.email},
+ function(err, users) {
+   if (users.length == 0) {
+
+     var newUser = new UserModel({
+       name: req.body.username,
+       email: req.body.email,
+       password: req.body.password
+     });
+     newUser.save(
+       function(error, user) {
+         req.session.user = user;
+
+         req.session.IsLog = true;
+
+             res.render('index', {dataAd: req.session.dataAd, IsLog: req.session.IsLog, user : req.session.user });
+
+                     }
+                   )
+                     } else {
+                   req.session.IsLog = false;
+                   res.render('signUp',{});
+                 }
+               }
+             )
+           } else {
+             req.session.IsLog = false;
+             res.render('signUp',{});
+
+           }
+           }
+           );
+
 
 module.exports = router;
