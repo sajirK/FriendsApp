@@ -13,7 +13,9 @@
     "express": "~4.15.5",
     "express-fileupload": "^0.4.0",
     "js-base64": "^2.4.3",
+    "mongoose": "^5.0.9",
     "morgan": "~1.9.0",
+    "redux-form": "^7.3.0",
     "serve-favicon": "~2.4.5"
   }
 }

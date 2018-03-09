@@ -18,14 +18,11 @@ mongoose.connect('mongodb://aaa:aaa@ds261088.mlab.com:61088/wholup',
 
    // user base de donnée
 var userSchema = mongoose.Schema({
-  name: String,
+  firstName: String,
+  lastName: String,
   email: String,
-  password: String,
-  job: String,
-  linkedin:String,
-  twitter:String,
-  Discord:String,
-  bio: String
+  password: String
+
 });
 var UserModel = mongoose.model('users', userSchema);
 
@@ -82,8 +79,6 @@ router.post('/upload', function(req, res) {
 
 // user form database
 router.post('/signUp', function(req, res, next) {
-if (req.body.password == req.body.confirm) {
-
 
 UserModel.find(
  {email: req.body.email},
@@ -91,31 +86,26 @@ UserModel.find(
    if (users.length == 0) {
 
      var newUser = new UserModel({
-       name: req.body.username,
+       firstName: req.body.firstName,
+       lastName: req.body.lastName,
        email: req.body.email,
        password: req.body.password
      });
+
      newUser.save(
        function(error, user) {
-         req.session.user = user;
+         console.log(user);
 
-         req.session.IsLog = true;
+         // req.session.IsLog = true;
 
-             res.render('index', {dataAd: req.session.dataAd, IsLog: req.session.IsLog, user : req.session.user });
-
+res.send('sign up done ! well done');
                      }
                    )
-                     } else {
-                   req.session.IsLog = false;
-                   res.render('signUp',{});
-                 }
+                     }
                }
              )
-           } else {
-             req.session.IsLog = false;
-             res.render('signUp',{});
 
-           }
+
            }
            );
 
